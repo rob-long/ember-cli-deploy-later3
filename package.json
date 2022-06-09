@@ -1,6 +1,6 @@
 {
   "name": "@latermedia/ember-cli-deploy-later",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
     "ember-addon",

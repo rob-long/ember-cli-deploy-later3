@@ -35,7 +35,7 @@ const checkStagingQueue = (context) => {
 };
 
 module.exports = {
-  name: '@latermedia/ember-cli-deploy-later',
+  name: 'ember-cli-deploy-later',
 
   createDeployPlugin: function (options) {
     var DeployPlugin = BasePlugin.extend({
