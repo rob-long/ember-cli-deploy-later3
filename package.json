@@ -3,13 +3,12 @@
   "version": "0.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "ember-cli-deploy-plugin"
   ],
-  "repository": "",
   "license": "MIT",
   "author": "",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "scripts": {
@@ -27,6 +26,7 @@
   },
   "dependencies": {
     "ember-cli-babel": "^7.26.10",
+    "ember-cli-deploy-plugin": "^0.2.9",
     "ember-cli-htmlbars": "^5.7.2"
   },
   "devDependencies": {
@@ -74,5 +74,6 @@
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
-  }
+  },
+  "main": "index.js"
 }
