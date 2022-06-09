@@ -1,35 +1,51 @@
-/* jshint node: true */
 'use strict';
+var BasePlugin = require('ember-cli-deploy-plugin');
+// eslint-disable-next-line node/no-missing-require
+const axios = require('axios');
 
-var DeployPluginBase = require('ember-cli-deploy-plugin');
+const checkStagingQueue = (context) => {
+  const deployTarget = context.commandOptions?.deployTarget;
+  const isStaging = deployTarget === 'staging';
+  const isProduction = deployTarget === 'production';
+
+  return new Promise(function (resolve, reject) {
+    const url = `http://localhost:8080/staging`;
+
+    if (context.commandOptions.force) {
+      resolve();
+    }
+
+    if (isStaging || isProduction) {
+      axios
+        .get(url)
+        .then((response) => {
+          if (response.data.queue?.length) {
+            reject(`Staging has been taken over by ${response.data.queue[0]}`);
+          } else {
+            resolve();
+          }
+        })
+        .catch((error) => {
+          reject(`Error getting staging status: ${error}`);
+        });
+    }
+
+    resolve();
+  });
+};
 
 module.exports = {
-  name: 'ember-cli-deploy-awesomeness',
+  name: '@latermedia/ember-cli-deploy-later',
 
   createDeployPlugin: function (options) {
-    var DeployPlugin = DeployPluginBase.extend({
+    var DeployPlugin = BasePlugin.extend({
       name: options.name,
 
-      // note: most plugins can simply implement these next two properties and use
-      // the base class' implementation of the `configure` hook
-      defaultConfig: {
-      // implement any hooks appropriate for your plugin
-      willUpload: function (context) {
-
-
-        // Use the `log` method to generate output consistent with the tree style
-        // of ember-cli-deploy's verbose output
-        this.log('output some awesomeness');
-        this.log('output some red awesomeness', { color: 'red' });
-        this.log('output this only when verbose option is enabled', {
-          verbose: true,
-        });
-
-        // Need to do something async? You can return a promise.
-        // Need to fail out? Throw an error or return a promise which becomes rejected
-        return Promise.resolve();
-      },
+      willBuild: checkStagingQueue,
+      willUpload: checkStagingQueue,
+      willActivate: checkStagingQueue,
     });
+
     return new DeployPlugin();
   },
 };
